@@ -115,8 +115,7 @@ services:
     restart: always
     ports:
       - "5432:5432"
-    volumes:
-      - postgres_dwh_data:/var/lib/postgresql/data
+
 
   postgres:
     image: postgres:16

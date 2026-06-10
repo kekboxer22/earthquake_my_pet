@@ -3,7 +3,6 @@ import logging
 
 import duckdb
 import pendulum
-from airflow import DAG
 from airflow.models import Variable
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
@@ -28,7 +27,7 @@ SHORT_DESCRIPTION = "SHORT DESCRIPTION"
 
 args = {
     "owner": OWNER,
-    "start_date": pendulum.datetime(2015, 1, 1),
+    "start_date": pendulum.datetime(2026, 6, 1),
     "catchup": True,
     "retries": 3,
     "retry_delay": pendulum.duration(hours=1),

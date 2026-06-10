@@ -82,7 +82,7 @@ with DAG(
     default_args=args,
     tags=["s3", "raw"],
     description=SHORT_DESCRIPTION,
-    concurrency=1,
+    max_active_tasks_per_dag=1,
     max_active_tasks=1,
     max_active_runs=1,
 ) as dag:

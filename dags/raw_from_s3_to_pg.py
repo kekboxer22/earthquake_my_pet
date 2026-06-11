@@ -8,11 +8,11 @@ from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
 from airflow.sensors.external_task import ExternalTaskSensor
 
-# Конфигурация DAG
+#  DAG Config
 OWNER = "i.korsakov"
 DAG_ID = "raw_from_s3_to_pg"
 
-# Используемые таблицы в DAG
+# Tables used in DAG
 LAYER = "raw"
 SOURCE = "earthquake"
 SCHEMA = "ods"
@@ -153,8 +153,8 @@ with DAG(
         external_dag_id="raw_from_api_to_s3",
         allowed_states=["success"],
         mode="reschedule",
-        timeout=360000,  # длительность работы сенсора
-        poke_interval=60,  # частота проверки
+        timeout=360000,  # Sensore time duration
+        poke_interval=60,  # Frequency of inspections
     )
 
     get_and_transfer_raw_data_to_ods_pg = PythonOperator(

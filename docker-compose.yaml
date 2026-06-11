@@ -120,7 +120,7 @@ services:
     image: postgres:16
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: 1488
       POSTGRES_DB: postgres
     restart: always
     ports:

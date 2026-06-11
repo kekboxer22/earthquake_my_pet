@@ -166,4 +166,4 @@ with DAG(
         task_id="end",
     )
 
-    start >> sensor_on_raw_layer >> get_and_transfer_raw_data_to_ods_pg >> endx
+    start >> sensor_on_raw_layer >> get_and_transfer_raw_data_to_ods_pg >> end

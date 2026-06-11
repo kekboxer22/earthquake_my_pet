@@ -9,7 +9,7 @@ from airflow.operators.python import PythonOperator
 from airflow.sensors.external_task import ExternalTaskSensor
 
 #  DAG Config
-OWNER = "i.korsakov"
+OWNER = "kek_prgraamer"
 DAG_ID = "raw_from_s3_to_pg"
 
 # Tables used in DAG

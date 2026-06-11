@@ -148,14 +148,7 @@ with DAG(
         task_id="start",
     )
 
-    sensor_on_raw_layer = ExternalTaskSensor(
-        task_id="sensor_on_raw_layer",
-        external_dag_id="raw_from_api_to_s3",
-        allowed_states=["success"],
-        mode="reschedule",
-        timeout=360000,  # Sensore time duration
-        poke_interval=60,  # Frequency of inspections
-    )
+
 
     get_and_transfer_raw_data_to_ods_pg = PythonOperator(
         task_id="get_and_transfer_raw_data_to_ods_pg",

@@ -148,7 +148,7 @@ with DAG(
         task_id="start",
     )
 
-sensor_on_raw_layer = ExternalTaskSensor(
+#sensor_on_raw_layer = ExternalTaskSensor(
         task_id="sensor_on_raw_layer",
         external_dag_id="raw_from_api_to_s3",
         allowed_states=["success"],
@@ -166,5 +166,5 @@ get_and_transfer_raw_data_to_ods_pg = PythonOperator(
 end = EmptyOperator(
         task_id="end",
     )
-
-start >> sensor_on_raw_layer >> get_and_transfer_raw_data_to_ods_pg >> end
+start  >> get_and_transfer_raw_data_to_ods_pg >> end
+#start >> sensor_on_raw_layer >> get_and_transfer_raw_data_to_ods_pg >> end

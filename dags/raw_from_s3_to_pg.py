@@ -49,8 +49,6 @@ def get_dates(**context) -> tuple[str, str]:
 
 
 def get_and_transfer_raw_data_to_ods_pg(**context):
-    """"""
-
     start_date, end_date = get_dates(**context)
     logging.info(f"💻 Start load for dates: {start_date}/{end_date}")
     con = duckdb.connect()
@@ -128,9 +126,10 @@ def get_and_transfer_raw_data_to_ods_pg(**context):
             locationSource AS location_source,
             magSource AS mag_source
         FROM 's3://prod/{LAYER}/{SOURCE}/{start_date}/{start_date}_00-00-00.gz.parquet';
-        """,
+        """
     )
 
+    con.sql("SHOW ALL TABLES").show()
     con.close()
     logging.info(f"✅ Download for date success: {start_date}")
 

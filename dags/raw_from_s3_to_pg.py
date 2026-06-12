@@ -55,6 +55,8 @@ def get_and_transfer_raw_data_to_ods_pg(**context):
     logging.info(f"💻 Start load for dates: {start_date}/{end_date}")
     con = duckdb.connect()
 
+    con.sql("SELECT current_database()").show()
+
     con.sql(
         f"""
         SET TIMEZONE='UTC';
@@ -153,7 +155,6 @@ with DAG(
 get_and_transfer_raw_data_to_ods_pg = PythonOperator(
         task_id="get_and_transfer_raw_data_to_ods_pg",
         python_callable=get_and_transfer_raw_data_to_ods_pg,
-        con.sql("SELECT current_database()").show(),
     )
 
 end = EmptyOperator(

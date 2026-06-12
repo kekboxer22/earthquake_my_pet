@@ -23,8 +23,7 @@ ACCESS_KEY = Variable.get("access_key")
 SECRET_KEY = Variable.get("secret_key")
 
 # DuckDB
-#PASSWORD = Variable.get("pg_password")
-PASSWORD = "1488"
+PASSWORD = Variable.get("pg_password")
 LONG_DESCRIPTION = """
 # LONG DESCRIPTION
 """
@@ -55,8 +54,7 @@ def get_and_transfer_raw_data_to_ods_pg(**context):
 
     con.sql("SELECT current_database()").show()
 
-    con.sql(
-        f"""
+    con.sql(f"""
         SET TIMEZONE='UTC';
         INSTALL httpfs;
         LOAD httpfs;
@@ -65,7 +63,10 @@ def get_and_transfer_raw_data_to_ods_pg(**context):
         SET s3_access_key_id = '{ACCESS_KEY}';
         SET s3_secret_access_key = '{SECRET_KEY}';
         SET s3_use_ssl = FALSE;
+    """)
 
+    # Создаём секрет для PostgreSQL
+    con.sql(f"""
         CREATE SECRET dwh_postgres (
             TYPE postgres,
             HOST 'postgres_dwh',
@@ -74,34 +75,49 @@ def get_and_transfer_raw_data_to_ods_pg(**context):
             USER 'postgres',
             PASSWORD '{PASSWORD}'
         );
+    """)
 
-        ATTACH '' AS dwh_postgres_db (TYPE postgres, SECRET dwh_postgres);
+    # Диагностика: проверим, создался ли секрет
+    con.sql("SELECT * FROM duckdb_secrets()").show()
 
+    # Пробуем прикрепить PostgreSQL
+    con.sql("ATTACH '' AS dwh_postgres_db (TYPE postgres, SECRET dwh_postgres);")
+
+    # Диагностика: какие таблицы видны после ATTACH
+    con.sql("SHOW ALL TABLES").show()
+
+    # Проверим, что таблица в PostgreSQL существует (создадим, если нет)
+    con.sql(f"""
+        CREATE SCHEMA IF NOT EXISTS dwh_postgres_db.{SCHEMA};
+        CREATE TABLE IF NOT EXISTS dwh_postgres_db.{SCHEMA}.{TARGET_TABLE} (
+            time VARCHAR,
+            latitude VARCHAR,
+            longitude VARCHAR,
+            depth VARCHAR,
+            mag VARCHAR,
+            mag_type VARCHAR,
+            nst VARCHAR,
+            gap VARCHAR,
+            dmin VARCHAR,
+            rms VARCHAR,
+            net VARCHAR,
+            id VARCHAR,
+            updated VARCHAR,
+            place VARCHAR,
+            type VARCHAR,
+            horizontal_error VARCHAR,
+            depth_error VARCHAR,
+            mag_error VARCHAR,
+            mag_nst VARCHAR,
+            status VARCHAR,
+            location_source VARCHAR,
+            mag_source VARCHAR
+        );
+    """)
+
+    # Вставка данных
+    con.sql(f"""
         INSERT INTO dwh_postgres_db.{SCHEMA}.{TARGET_TABLE}
-        (
-            time,
-            latitude,
-            longitude,
-            depth,
-            mag,
-            mag_type,
-            nst,
-            gap,
-            dmin,
-            rms,
-            net,
-            id,
-            updated,
-            place,
-            type,
-            horizontal_error,
-            depth_error,
-            mag_error,
-            mag_nst,
-            status,
-            location_source,
-            mag_source
-        )
         SELECT
             time,
             latitude,
@@ -126,10 +142,8 @@ def get_and_transfer_raw_data_to_ods_pg(**context):
             locationSource AS location_source,
             magSource AS mag_source
         FROM 's3://prod/{LAYER}/{SOURCE}/{start_date}/{start_date}_00-00-00.gz.parquet';
-        """
-    )
+    """)
 
-    con.sql("SHOW ALL TABLES").show()
     con.close()
     logging.info(f"✅ Download for date success: {start_date}")
 

@@ -23,8 +23,8 @@ ACCESS_KEY = Variable.get("access_key")
 SECRET_KEY = Variable.get("secret_key")
 
 # DuckDB
-PASSWORD = Variable.get("pg_password")
-
+#PASSWORD = Variable.get("pg_password")
+PASSWORD = "1488"
 LONG_DESCRIPTION = """
 # LONG DESCRIPTION
 """
@@ -153,6 +153,7 @@ with DAG(
 get_and_transfer_raw_data_to_ods_pg = PythonOperator(
         task_id="get_and_transfer_raw_data_to_ods_pg",
         python_callable=get_and_transfer_raw_data_to_ods_pg,
+        con.sql("SELECT current_database()").show()
     )
 
 end = EmptyOperator(

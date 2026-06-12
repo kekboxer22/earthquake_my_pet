@@ -158,13 +158,13 @@ sensor_on_raw_layer = ExternalTaskSensor(
     )
 
 
-    get_and_transfer_raw_data_to_ods_pg = PythonOperator(
+get_and_transfer_raw_data_to_ods_pg = PythonOperator(
         task_id="get_and_transfer_raw_data_to_ods_pg",
         python_callable=get_and_transfer_raw_data_to_ods_pg,
     )
 
-    end = EmptyOperator(
+end = EmptyOperator(
         task_id="end",
     )
 
-    start >> sensor_on_raw_layer >> get_and_transfer_raw_data_to_ods_pg >> end
+start >> sensor_on_raw_layer >> get_and_transfer_raw_data_to_ods_pg >> end
